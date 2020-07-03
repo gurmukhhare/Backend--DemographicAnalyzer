@@ -1,2 +1,2 @@
 # Backend--DemographicAnalyzer
-# Backend--DemographicAnalyzer
+This repository contains the code for the back-end of DemoMe, a web app that is able to predict age, gender, and cultural appearence based on the images the user uploads. Users can sign in or register and DemoMe will track their total number of attempts. The back-end is implemented in Node.js with the Express.js library to manage routing and middleware. DemoMe also utilizes a PostgreSQL database to store user information. All sensitive information is hashed using Bcrypt and only then sent to the database. 
