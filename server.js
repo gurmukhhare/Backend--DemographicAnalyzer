@@ -7,28 +7,29 @@ const knex = require ('knex');
 const db=knex({
   client: 'pg',
   connection: {
-    host : '127.0.0.1',  //localhost, this is where our database lives
+    host : '127.0.0.1',  //postgres db for application configured on local machine
     user : 'gurmukhhare',
     password : '',
     database : 'smart-brain-2'
   }
 });
 
-db.select('*').from('users').then(data =>{
-	console.log(data);
-});
 
 const app = express();
 
+//defining middleware
 app.use(bodyParser.json());
 app.use(cors());
-
 
 
 app.get('/',(req,res)=>{
 	res.json('this is working');
 })
 
+
+/**
+* Sign-in endpoint, checks inputted email and password with saved hash in db. Returns error if incorrect credentials
+*/
 app.post('/signin',(req,res)=>{
 	db.select('email', 'hash').from('login')
 	.where('email','=',req.body.email)
@@ -53,6 +54,10 @@ app.post('/signin',(req,res)=>{
 
 })
 
+
+/**
+* Register new user. Handled as a single db transaction
+*/
 app.post('/register',(req,res)=>{
 	const { email,name,password }=req.body;
 	const hash = bcrypt.hashSync(password);
@@ -86,6 +91,10 @@ app.post('/register',(req,res)=>{
 	.catch(err => res.status(400).json('unable to register'))
 })
 
+
+/**
+* Retrieve user information based on ID URL parameter
+*/
 app.get('/profile/:id',(req,res) => {
 	const { id }=req.params;   /*parameters is an object containing 
 	parameters values parsed from the url path. if we use :'' syntax in url, we can grab the parameter 
@@ -103,6 +112,10 @@ app.get('/profile/:id',(req,res) => {
 	.catch(err => res.status(400).json('error getting user'))
 	}) 
 
+
+/**
+* Update user entries, increment by 1 for each use
+*/
 app.put('/image',(req,res)=>{
 	const { id }=req.body;   /*parameters is an object containing 
 	parameters values parsed from the url path. if we use :'' syntax in url, we can grab the parameter 
@@ -115,16 +128,6 @@ app.put('/image',(req,res)=>{
 })
 
 
-
-// Load hash from your password DB.
-/*bcrypt.compare("bacon", hash, function(err, res) {
-    // res == true
-});
-bcrypt.compare("veggies", hash, function(err, res) {
-    // res = false
-});
-
-*/
 
 app.listen(3000, ()=>{
 	console.log('app is running');
