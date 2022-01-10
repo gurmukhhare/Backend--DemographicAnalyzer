@@ -14,9 +14,7 @@ const db=knex({
   }
 });
 
-
 const app = express();
-
 //defining middleware
 app.use(bodyParser.json());
 app.use(cors());
@@ -25,7 +23,6 @@ app.use(cors());
 app.get('/',(req,res)=>{
 	res.json('this is working');
 })
-
 
 /**
 * Sign-in endpoint, checks inputted email and password with saved hash in db. Returns error if incorrect credentials
@@ -40,16 +37,11 @@ app.post('/signin',(req,res)=>{
 			.where('email','=',req.body.email)
 			.then(user =>{
 				res.json(user[0])
-
-			})
-			.catch(err => res.status(400).json('unable to get user'))
-			
+			}).catch(err => res.status(400).json('unable to get user'))
 		} else{
 		res.status(400).json('wrong credentials')
 		}
-
-	})
-	.catch(err => res.status(400).json('wrong credentials'))
+	}).catch(err => res.status(400).json('wrong credentials'))
 
 
 })
@@ -75,20 +67,9 @@ app.post('/register',(req,res)=>{
 					email: loginEmail[0],
 					name: name,
 					joined: new Date ()
-				})
-				.then(user =>{
-					res.json(user[0]);
-
-
-				})
-
-			})
-			.then(trx.commit)
-			.catch(trx.rollback)
-		})
-
-		
-	.catch(err => res.status(400).json('unable to register'))
+				}).then(user =>{res.json(user[0]);})
+			}).then(trx.commit).catch(trx.rollback)
+		}).catch(err => res.status(400).json('unable to register'))
 })
 
 
@@ -107,7 +88,6 @@ app.get('/profile/:id',(req,res) => {
 		} else{
 			res.status(400).json('not found')
 		}
-
 	})
 	.catch(err => res.status(400).json('error getting user'))
 	}) 
@@ -128,21 +108,13 @@ app.put('/image',(req,res)=>{
 })
 
 
-
 app.listen(3000, ()=>{
 	console.log('app is running');
 });
 
 
-
-
-
-
 /*
-
 /signin- -> POST = responds with success or fail-->
-**anytime you send secure data over the wire, you want to use POST to send it in the body of the request
-
 /register -->POST = responds by returning the new created user object
 /profile/:userID --> GET = reponds with the user
 /image --> PUT = updates the total number of attempts count 
