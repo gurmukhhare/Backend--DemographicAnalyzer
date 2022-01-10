@@ -140,8 +140,6 @@ app.listen(3000, ()=>{
 
 /*
 
-/ -->response = this is working
-
 /signin- -> POST = responds with success or fail-->
 **anytime you send secure data over the wire, you want to use POST to send it in the body of the request
 
